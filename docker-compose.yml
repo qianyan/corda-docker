@@ -27,14 +27,14 @@ services:
     build:
       context: .
       args:
-        BUILDTIME_CORDA_VERSION: 3.0.0
+        BUILDTIME_CORDA_VERSION: corda-3.0
     env_file:
       - ./corda_docker.env
     ports:
       - "10012:10002"
       - "10013:10003"
       - "10014:10004"
-    image: corda/networkmap:2.0
+    image: corda/networkmap:3.0
     container_name: networkmap
     volumes:
       - ./nodes/networkmap/corda-networkmap.conf:/opt/corda/node.conf
