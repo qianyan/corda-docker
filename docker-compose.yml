@@ -1,7 +1,7 @@
 version: '3.3'
 services:
 
-  Notary:
+  NetworkMapAndNotary:
     networks:
       - corda
     build:
@@ -12,16 +12,14 @@ services:
       - ./corda_docker.env
     ports:
       - "10002:10002"
-      - "10003:10003"
-      - "10004:10004"
-    image: corda/node:3.0
-    container_name: notary
+   image: corda/node:3.0
+    container_name: networkmapAndNotary 
     volumes:
-      - ./nodes/notary/corda-notary.conf:/opt/corda/node.conf
-      - ./plugins/:/opt/corda/plugins/
-      - ./nodes/notary/certificates/:/opt/corda/certificates/
+      - ./nodes/NetworkMapAndNotary/node.conf:/opt/corda/node.conf
+      - ./cordapps/:/opt/corda/cordapps/
+      - ./nodes/NetworkMapAndNotary/certificates/:/opt/corda/certificates/
 
-  CordaNetworkMap:
+  PartyA:
     networks:
       - corda
     build:
@@ -31,37 +29,20 @@ services:
     env_file:
       - ./corda_docker.env
     ports:
-      - "10012:10002"
-      - "10013:10003"
-      - "10014:10004"
-    image: corda/networkmap:3.0
-    container_name: networkmap
-    volumes:
-      - ./nodes/networkmap/corda-networkmap.conf:/opt/corda/node.conf
-
-  CordaNodeA:
-    networks:
-      - corda
-    build:
-      context: .
-      args:
-        BUILDTIME_CORDA_VERSION: corda-3.0
-    env_file:
-      - ./corda_docker.env
-    ports:
-      - "10022:10002"
-      - "10023:10003"
-      - "10024:10004"
+      - "10005:10005"
+      - "10006:10006"
+      - "10046:10046"
+      - "10007:10007"
     image: corda/node:3.0
-    container_name: banka
+    container_name: PartyA
     volumes:
-      - ./nodes/banka/corda-banka.conf:/opt/corda/node.conf
-      - ./plugins/:/opt/corda/plugins/
-      - ./nodes/banka/certificates/:/opt/corda/certificates/
+      - ./nodes/PartyA/node.conf:/opt/corda/node.conf
+      - ./cordapps/:/opt/corda/cordapps/
+      - ./nodes/PartyA/certificates/:/opt/corda/certificates/
     depends_on:
-      - CordaNetworkMap
+      - NetworkMapAndNotary
 
-  CordaNodeB:
+  PartyA:
     networks:
       - corda
     build:
@@ -71,39 +52,18 @@ services:
     env_file:
       - ./corda_docker.env
     ports:
-      - "10032:10002"
-      - "10033:10003"
-      - "10034:10004"
+      - "10008:10008"
+      - "10009:10009"
+      - "10049:10049"
+      - "10010:10010"
     image: corda/node:3.0
-    container_name: bankb
+    container_name: PartyB
     volumes:
-      - ./nodes/bankb/corda-bankb.conf:/opt/corda/node.conf
-      - ./plugins/:/opt/corda/plugins/
-      - ./nodes/bankb/certificates/:/opt/corda/certificates/
+      - ./nodes/PartyB/node.conf:/opt/corda/node.conf
+      - ./cordapps/:/opt/corda/cordapps/
+      - ./nodes/PartyB/certificates/:/opt/corda/certificates/
     depends_on:
-      - CordaNetworkMap
-
-  CordaNodeC:
-    networks:
-      - corda
-    build:
-      context: .
-      args:
-        BUILDTIME_CORDA_VERSION: corda-3.0
-    env_file:
-      - ./corda_docker.env
-    ports:
-      - "10042:10002"
-      - "10043:10003"
-      - "10044:10004"
-    image: corda/node:3.0
-    container_name: bankc
-    volumes:
-      - ./nodes/bankc/corda-bankc.conf:/opt/corda/node.conf
-      - ./plugins/:/opt/corda/plugins/
-      - ./nodes/bankc/certificates/:/opt/corda/certificates/
-    depends_on:
-      - CordaNetworkMap
+      - NetworkMapAndNotary
 
 networks:
   corda:
