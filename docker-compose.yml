@@ -38,7 +38,7 @@ services:
     volumes:
       - ./nodes/PartyA/node.conf:/opt/corda/node.conf
       - ./cordapps/:/opt/corda/cordapps/
-        #      - ./nodes/PartyA/network-parameters:/opt/corda/network-parameters
+      - ./nodes/PartyA/network-parameters:/opt/corda/network-parameters
       - ./nodes/PartyA/certificates/:/opt/corda/certificates/
     depends_on:
       - NetworkMapAndNotary
@@ -61,7 +61,7 @@ services:
     container_name: PartyB
     volumes:
       - ./nodes/PartyB/node.conf:/opt/corda/node.conf
-        #      - ./nodes/PartyB/network-parameters:/opt/corda/network-parameters
+      - ./nodes/PartyB/network-parameters:/opt/corda/network-parameters
       - ./cordapps/:/opt/corda/cordapps/
       - ./nodes/PartyB/certificates/:/opt/corda/certificates/
     depends_on:
