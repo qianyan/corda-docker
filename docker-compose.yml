@@ -5,18 +5,18 @@ services:
     networks:
       - corda
     build:
-      context: .
+      context: ./nodes/NetworkMapAndNotary
       args:
         BUILDTIME_CORDA_VERSION: corda-3.0
     env_file:
       - ./corda_docker.env
     ports:
       - "10002:10002"
-   image: corda/node:3.0
-    container_name: networkmapAndNotary 
+    image: corda/networkmapandnotary:3.0
+    container_name: NetworkMapAndNotary 
     volumes:
       - ./nodes/NetworkMapAndNotary/node.conf:/opt/corda/node.conf
-      - ./cordapps/:/opt/corda/cordapps/
+      - ./nodes/NetworkMapAndNotary/network-parameters:/opt/corda/network-parameters
       - ./nodes/NetworkMapAndNotary/certificates/:/opt/corda/certificates/
 
   PartyA:
@@ -38,11 +38,12 @@ services:
     volumes:
       - ./nodes/PartyA/node.conf:/opt/corda/node.conf
       - ./cordapps/:/opt/corda/cordapps/
+        #      - ./nodes/PartyA/network-parameters:/opt/corda/network-parameters
       - ./nodes/PartyA/certificates/:/opt/corda/certificates/
     depends_on:
       - NetworkMapAndNotary
 
-  PartyA:
+  PartyB:
     networks:
       - corda
     build:
@@ -60,6 +61,7 @@ services:
     container_name: PartyB
     volumes:
       - ./nodes/PartyB/node.conf:/opt/corda/node.conf
+        #      - ./nodes/PartyB/network-parameters:/opt/corda/network-parameters
       - ./cordapps/:/opt/corda/cordapps/
       - ./nodes/PartyB/certificates/:/opt/corda/certificates/
     depends_on:
