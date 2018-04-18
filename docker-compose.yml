@@ -1,27 +1,29 @@
 version: '3.3'
 services:
-
-  NetworkMapAndNotary:
+  Notary:
     networks:
-      - corda
+      corda:
+        ipv4_address: 10.5.0.5
     build:
-      context: ./nodes/NetworkMapAndNotary
+      context: ./nodes/Notary
       args:
         BUILDTIME_CORDA_VERSION: corda-3.0
     env_file:
       - ./corda_docker.env
     ports:
       - "10002:10002"
-    image: corda/networkmapandnotary:3.0
-    container_name: NetworkMapAndNotary 
+    image: corda/notary:3.0
+    container_name: Notary 
     volumes:
-      - ./nodes/NetworkMapAndNotary/node.conf:/opt/corda/node.conf
-      - ./nodes/NetworkMapAndNotary/network-parameters:/opt/corda/network-parameters
-      - ./nodes/NetworkMapAndNotary/certificates/:/opt/corda/certificates/
+      - ./nodes/Notary/node.conf:/opt/corda/node.conf
+      - ./nodes/Notary/network-parameters:/opt/corda/network-parameters
+      - ./nodes/Notary/additional-node-infos:/opt/corda/additional-node-infos
+      - ./nodes/Notary/certificates/:/opt/corda/certificates/
 
   PartyA:
     networks:
-      - corda
+      corda:
+        ipv4_address: 10.5.0.6
     build:
       context: .
       args:
@@ -39,13 +41,15 @@ services:
       - ./nodes/PartyA/node.conf:/opt/corda/node.conf
       - ./cordapps/:/opt/corda/cordapps/
       - ./nodes/PartyA/network-parameters:/opt/corda/network-parameters
+      - ./nodes/PartyA/additional-node-infos:/opt/corda/additional-node-infos
       - ./nodes/PartyA/certificates/:/opt/corda/certificates/
     depends_on:
-      - NetworkMapAndNotary
+      - Notary
 
   PartyB:
     networks:
-      - corda
+      corda:
+        ipv4_address: 10.5.0.7
     build:
       context: .
       args:
@@ -62,10 +66,41 @@ services:
     volumes:
       - ./nodes/PartyB/node.conf:/opt/corda/node.conf
       - ./nodes/PartyB/network-parameters:/opt/corda/network-parameters
+      - ./nodes/PartyB/additional-node-infos:/opt/corda/additional-node-infos
       - ./cordapps/:/opt/corda/cordapps/
       - ./nodes/PartyB/certificates/:/opt/corda/certificates/
     depends_on:
-      - NetworkMapAndNotary
+      - Notary
+  PartyC:
+    networks:
+      corda:
+        ipv4_address: 10.5.0.8
+    build:
+      context: .
+      args:
+        BUILDTIME_CORDA_VERSION: corda-3.0
+    env_file:
+      - ./corda_docker.env
+    ports:
+      - "10011:10011"
+      - "10012:10012"
+      - "10052:10052"
+      - "10013:10013"
+    image: corda/node:3.0
+    container_name: PartyC
+    volumes:
+      - ./nodes/PartyC/node.conf:/opt/corda/node.conf
+      - ./nodes/PartyC/network-parameters:/opt/corda/network-parameters
+      - ./nodes/PartyC/additional-node-infos:/opt/corda/additional-node-infos
+      - ./cordapps/:/opt/corda/cordapps/
+      - ./nodes/PartyC/certificates/:/opt/corda/certificates/
+    depends_on:
+      - Notary
 
 networks:
   corda:
+      driver: bridge
+      ipam:
+        driver: default
+        config:
+          - subnet: 10.5.0.0/24
