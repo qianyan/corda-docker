@@ -1,5 +1,10 @@
 # Corda on Docker
 
+## Install Docker in Ubuntu
+```
+$ sudo apt install -y docker.io
+```
+
 **Docker 17.09 and up is required for this Dockerfile.**
 
 Docker configuration files to create and spin up Docker images for a few Corda Nodes (PartyA/PartyB), Networkmap, Notary and one CordApp.
