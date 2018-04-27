@@ -1,6 +1,6 @@
 # Corda on Docker
 
-## 1. nstall Docker in Ubuntu
+## 1. Install Docker in Ubuntu
 ```
 $ sudo apt install -y docker.io
 ```
