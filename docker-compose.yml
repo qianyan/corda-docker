@@ -39,7 +39,6 @@ services:
     container_name: BMBS
     volumes:
       - ./nodes/BMBS/node.conf:/opt/corda/node.conf
-      - ./cordapps/:/opt/corda/cordapps/
       - ./nodes/BMBS/network-parameters:/opt/corda/network-parameters
       - ./nodes/BMBS/additional-node-infos:/opt/corda/additional-node-infos
       - ./nodes/BMBS/certificates/:/opt/corda/certificates/
