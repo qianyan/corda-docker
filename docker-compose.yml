@@ -20,7 +20,7 @@ services:
       - ./nodes/Notary/additional-node-infos:/opt/corda/additional-node-infos
       - ./nodes/Notary/certificates/:/opt/corda/certificates/
 
-  PartyA:
+  BMBS:
     networks:
       corda:
         ipv4_address: 10.5.0.6
@@ -36,64 +36,13 @@ services:
       - "10046:10046"
       - "10007:10007"
     image: corda/node:3.0
-    container_name: PartyA
+    container_name: BMBS
     volumes:
-      - ./nodes/PartyA/node.conf:/opt/corda/node.conf
+      - ./nodes/BMBS/node.conf:/opt/corda/node.conf
       - ./cordapps/:/opt/corda/cordapps/
-      - ./nodes/PartyA/network-parameters:/opt/corda/network-parameters
-      - ./nodes/PartyA/additional-node-infos:/opt/corda/additional-node-infos
-      - ./nodes/PartyA/certificates/:/opt/corda/certificates/
-    depends_on:
-      - Notary
-
-  PartyB:
-    networks:
-      corda:
-        ipv4_address: 10.5.0.7
-    build:
-      context: .
-      args:
-        BUILDTIME_CORDA_VERSION: corda-3.0
-    env_file:
-      - ./corda_docker.env
-    ports:
-      - "10008:10008"
-      - "10009:10009"
-      - "10049:10049"
-      - "10010:10010"
-    image: corda/node:3.0
-    container_name: PartyB
-    volumes:
-      - ./nodes/PartyB/node.conf:/opt/corda/node.conf
-      - ./nodes/PartyB/network-parameters:/opt/corda/network-parameters
-      - ./nodes/PartyB/additional-node-infos:/opt/corda/additional-node-infos
-      - ./cordapps/:/opt/corda/cordapps/
-      - ./nodes/PartyB/certificates/:/opt/corda/certificates/
-    depends_on:
-      - Notary
-  PartyC:
-    networks:
-      corda:
-        ipv4_address: 10.5.0.8
-    build:
-      context: .
-      args:
-        BUILDTIME_CORDA_VERSION: corda-3.0
-    env_file:
-      - ./corda_docker.env
-    ports:
-      - "10011:10011"
-      - "10012:10012"
-      - "10052:10052"
-      - "10013:10013"
-    image: corda/node:3.0
-    container_name: PartyC
-    volumes:
-      - ./nodes/PartyC/node.conf:/opt/corda/node.conf
-      - ./nodes/PartyC/network-parameters:/opt/corda/network-parameters
-      - ./nodes/PartyC/additional-node-infos:/opt/corda/additional-node-infos
-      - ./cordapps/:/opt/corda/cordapps/
-      - ./nodes/PartyC/certificates/:/opt/corda/certificates/
+      - ./nodes/BMBS/network-parameters:/opt/corda/network-parameters
+      - ./nodes/BMBS/additional-node-infos:/opt/corda/additional-node-infos
+      - ./nodes/BMBS/certificates/:/opt/corda/certificates/
     depends_on:
       - Notary
 
