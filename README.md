@@ -20,7 +20,9 @@ In addition to the network map, all the nodes on a network must use the same set
 
 ```
 $ java -jar network-bootstrapper-corda-3.0.jar nodes
-``` 
+$ cd nodes
+$ cp -r placeholder/ Notary/
+```
 the command will generate nodes' directory for us as below:
 
 ```
@@ -44,11 +46,6 @@ nodes
 │   ├── Dockerfile
 │   └── run-corda.sh
 └── whitelist.txt
-```
-
-## Copy Dockerfile & run-corda.sh from placeholder notary
-```
-$ cp -r placeholder/ Notary
 ```
 
 ## Usage (automatic way - using docker compose)
