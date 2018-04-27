@@ -4,22 +4,15 @@
 ```
 $ sudo apt install -y docker.io
 ```
-Verify if docker is installed successfully by running `sudo docker` to check infomation.
+Verify if docker is installed successfully by running `sudo docker` to check information.
 
 **Docker 17.09 and up is required for this Dockerfile.**
 
-Docker configuration files to create and spin up Docker images for a few Corda Nodes (PartyA/PartyB), Networkmap, Notary and one CordApp.
+Docker configuration files to create and spin up Docker images for a few Corda Nodes.
 
 The docker image is based on Alpine/OpenJDK (https://hub.docker.com/_/openjdk/)
 
-
-## 2. Download network-bootstrapper-corda-3.0.jar in project working directory, refer to the chapter [corda network](https://docs.corda.net/setting-up-a-corda-network.html?highlight=bootstrap#whitelisting-contracts)
-```
-$ curl -O http://downloads.corda.net/network-bootstrapper-corda-3.0.jar
-
-```
-
-## 3. Bootstrapping network for corda
+## 2. Bootstrapping network for corda
 The nodes see each other using the network map. This is a collection of statically signed node-info files, one for each node in the network. Most production deployments will use a highly available, secure distribution of the network map via HTTP.
 
 In addition to the network map, all the nodes on a network must use the same set of network parameters. These are a set of constants which guarantee interoperability between nodes. The HTTP network map distributes the network parameters which the node downloads automatically
@@ -54,23 +47,26 @@ nodes
 └── whitelist.txt
 ```
 
-## 4. Usage (automatic way - using docker compose)
-* `cd ..` to working directory, Check Dockerfile and docker-compose.yml (e.g. to adjust version or exposed ports)
-* `docker-compose build` - to build base Corda images for Corda Node/Networkmap/Notary
-* `docker-compose up` - to spin up all Corda containers (Nodes + Networkmap + Notary)
+## 3. Using docker compose
+*  Check Dockerfile and docker-compose.yml (e.g. to adjust version or exposed ports)
+* `docker-compose build` - to build base Corda images for Corda Node
+* `docker-compose up` - to spin up all Corda containers
 * `docker exec -it BMBS /bin/sh` - to log in to one of the running Node containers
 
 ## Corda configuration
 At the moment java options are put into **corda_docker.env**. All the others are in Dockerfile/docker_compose.yml
 
 ## Use installed CordApps
-Post to issue a vehicle :
+
+### API
+Issue a vehicle
 
 ```
-POST http://localhost:10007/api/smartvin/vehicles
-{
+curl -X POST \
+  http://localhost:10007/api/smartvin/vehicles \
+  -d '{
   "VIN": "1HGBH41JXMN109187",
-  "issuer": "BMBS", // only BMBS is legal entity here because there is only one node.
+  "issuer": "BMBS",
   "msrp": "",
   "titleDoc": "",
   "gpsLocation": "",
@@ -80,12 +76,25 @@ POST http://localhost:10007/api/smartvin/vehicles
   "engine": "",
   "steering": "",
   "factory": ""
-}
+}'
+```
+
+Get the vehicle by VIN
+```
+curl -X GET http://localhost:10007/api/smartvin/vehicles/1HGBH41JXMN109187
+```
+
+Get all issued vehicles
+
+```
+curl -X GET http://localhost:10007/api/smartvin/vehicles
 ```
 
 ## Issues
 
 If you get the following message: `<containername> exited with code 137` it's likely because the Linux OOM killer is getting triggered inside of running Docker instance.
 Please adjust memory size for Docker environment:
+
 On MacOS: https://docs.docker.com/docker-for-mac/#memory
+
 On Windows: https://docs.docker.com/docker-for-windows/#advanced
